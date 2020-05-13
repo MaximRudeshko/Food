@@ -96,8 +96,111 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     setClock();
-    
-    
 
 
-})
+    //Modal
+
+    const trigger = document.querySelectorAll('[data-modal]'),
+          modal = document.querySelector('.modal'),
+          close = modal.querySelector('[data-close]');
+
+    trigger.forEach(item => {
+        item.addEventListener('click', openModal)
+    })
+
+    close.addEventListener('click', () => {
+        modal.style.display = 'none'
+        document.body.style.overflow = '';
+    })
+
+    modal.addEventListener('click', e => {
+        if(e.target == modal && modal){
+            modal.style.display = 'none'
+            document.body.style.overflow = '';
+        }
+    })
+
+    document.addEventListener('keydown', (e) => {
+        if(e.code === 'Escape' && modal.style.display == 'block'){
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+    })
+
+    const modalTimer = setTimeout(openModal, 3000)
+
+    function openModal() {
+        modal.style.display = 'block'
+        document.body.style.overflow = 'hidden';
+        clearInterval(modalTimer)
+    }
+
+    function openModalByScroll(){
+        if(window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight){
+            openModal();
+            window.removeEventListener('scroll', openModalByScroll)
+        }
+    }
+
+    window.addEventListener('scroll', openModalByScroll);
+
+    class MenuCard{
+        constructor(src, title, discription, price, parentSelector){
+            this.src = src,
+            this.title = title,
+            this.discription = discription,
+            this.price = price,
+            this.parent = document.querySelector(parentSelector)
+        }
+
+        render(){
+            const element = document.createElement('div');
+            element.innerHTML = `
+                <div class="menu__item">
+                    <img src=${this.src} alt="vegy">
+                    <h3 class="menu__item-subtitle">${this.title}</h3>
+                    <div class="menu__item-descr">${this.discription}</div>
+                    <div class="menu__item-divider"></div>
+                    <div class="menu__item-price">
+                        <div class="menu__item-cost">Цена:</div>
+                        <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+                    </div>
+                </div>
+            `;
+            this.parent.append(element);
+        }
+    }
+
+    new MenuCard(
+        "img/tabs/vegy.jpg",
+        'Меню "Фитнес"',
+        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+        229,
+        '.menu .container'
+
+    ).render();
+
+    new MenuCard(
+        "img/tabs/elite.jpg",
+        'Меню “Премиум”',
+        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+        550,
+        '.menu .container'
+
+    ).render();
+
+    new MenuCard(
+        "img/tabs/post.jpg",
+        'Меню "Постное"',
+        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
+        430,
+        '.menu .container'
+
+    ).render();
+
+    
+});
+
+
+
+
