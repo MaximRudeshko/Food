@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 
-    const modalTimer = setTimeout(openModal, 3000)
+    //const modalTimer = setTimeout(openModal, 3000)
 
     function openModal() {
         modal.style.display = 'block'
@@ -197,6 +197,60 @@ document.addEventListener('DOMContentLoaded', () => {
         '.menu .container'
 
     ).render();
+
+
+    //server
+
+    const forms = document.querySelectorAll('form');
+
+    const message = {
+        success : 'Данные успешно отправлены',
+        failure : 'Error!!!',
+        loading : "Loading..."
+    }
+
+    forms.forEach(item => {
+        postData(item)
+    })
+
+    function postData(form){
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+
+            const element = document.createElement('div');
+            element.classList.add('status');
+            element.textContent = message.loading;
+            form.append(element);
+
+            const request = new XMLHttpRequest();
+            request.open("POST", '../server.php')
+            request.setRequestHeader('Content-type', 'application/json')
+
+            const formData = new FormData(form);
+            const newObj = {}
+
+            formData.forEach((item, i) => {
+                newObj[i] = item
+            });
+            console.log(newObj)
+            const json = JSON.stringify(newObj);
+
+            request.send(json);
+
+            request.addEventListener('load', () => {
+                if(request.status === 200){
+                    console.log(request.response);
+                    element.textContent = message.success;
+                    form.reset();
+                    setTimeout(() => {
+                        element.remove()
+                    }, 3000)
+                }else{
+                    element.textContent = message.failure;
+                }
+            })
+        })
+    }
 
     
 });
