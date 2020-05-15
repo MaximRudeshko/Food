@@ -101,20 +101,14 @@ document.addEventListener('DOMContentLoaded', () => {
     //Modal
 
     const trigger = document.querySelectorAll('[data-modal]'),
-          modal = document.querySelector('.modal'),
-          close = modal.querySelector('[data-close]');
+          modal = document.querySelector('.modal');;
 
     trigger.forEach(item => {
         item.addEventListener('click', openModal)
     })
 
-    close.addEventListener('click', () => {
-        modal.style.display = 'none'
-        document.body.style.overflow = '';
-    })
-
     modal.addEventListener('click', e => {
-        if(e.target == modal && modal){
+        if(e.target == modal || e.target.getAttribute('data-close') == ''){
             modal.style.display = 'none'
             document.body.style.overflow = '';
         }
@@ -127,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 
-    //const modalTimer = setTimeout(openModal, 3000)
+    const modalTimer = setTimeout(openModal, 60000)
 
     function openModal() {
         modal.style.display = 'block'
@@ -204,9 +198,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const forms = document.querySelectorAll('form');
 
     const message = {
-        success : 'Данные успешно отправлены',
+        success : 'Мы вам перезвоним',
         failure : 'Error!!!',
-        loading : "Loading..."
+        loading : "img/spinner.svg"
     }
 
     forms.forEach(item => {
@@ -217,10 +211,21 @@ document.addEventListener('DOMContentLoaded', () => {
         form.addEventListener('submit', e => {
             e.preventDefault();
 
-            const element = document.createElement('div');
+
+            let spinner = document.createElement('img');
+            spinner.src = message.loading;
+            spinner.style.cssText = `
+                display: block;
+                margin: 0 auto
+            `;
+            form.insertAdjacentElement('afterend', spinner); 
+
+
+
+            /* const element = document.createElement('div');
             element.classList.add('status');
             element.textContent = message.loading;
-            form.append(element);
+            form.append(element); */
 
             const request = new XMLHttpRequest();
             request.open("POST", '../server.php')
@@ -240,15 +245,40 @@ document.addEventListener('DOMContentLoaded', () => {
             request.addEventListener('load', () => {
                 if(request.status === 200){
                     console.log(request.response);
-                    element.textContent = message.success;
+                    //element.textContent = message.success;
                     form.reset();
-                    setTimeout(() => {
-                        element.remove()
-                    }, 3000)
+                    spinner.remove();
+                    showThanksModal(message.success);
+                    
                 }else{
-                    element.textContent = message.failure;
+                    showThanksModal(message.failure);
                 }
             })
+
+            function showThanksModal(message){
+                let prevDialogModal = document.querySelector('.modal__dialog');
+
+                prevDialogModal.style.display = 'none';
+                openModal();
+
+                let thanksModal = document.createElement('div');
+                thanksModal.classList.add('modal__dialog');
+                thanksModal.innerHTML = `
+                    <div class = "modal__content">
+                        <div data-close class="modal__close">&times;</div>
+                        <div class="modal__title">${message}</div>
+                    </div>
+                `;
+
+                document.querySelector('.modal').append(thanksModal);
+
+                setTimeout(() => {
+                    thanksModal.remove();
+                    modal.style.display = 'none';
+                    prevDialogModal.style.display = 'block'; 
+                    document.body.style.overflow = '';                   
+                },4000)
+            }
         })
     }
 
