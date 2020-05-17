@@ -237,12 +237,24 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.forEach((item, i) => {
                 newObj[i] = item
             });
-            console.log(newObj)
-            const json = JSON.stringify(newObj);
+        
+        
+            fetch('server.php',{
+                method: 'POST',
+                headers: {
+                    'Content-type' : 'application/json'
+                },
+                body: JSON.stringify(newObj)
+            }).then((data) => {
+                    showThanksModal(message.success);
+                    spinner.remove();
+                }).catch(() => {
+                    showThanksModal(message.failure);
+                }).finally(() => {
+                    form.reset()
+                })
 
-            request.send(json);
-
-            request.addEventListener('load', () => {
+           /*  request.addEventListener('load', () => {
                 if(request.status === 200){
                     console.log(request.response);
                     //element.textContent = message.success;
@@ -253,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }else{
                     showThanksModal(message.failure);
                 }
-            })
+            }) */
 
             function showThanksModal(message){
                 let prevDialogModal = document.querySelector('.modal__dialog');
@@ -279,8 +291,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.body.style.overflow = '';                   
                 },4000)
             }
-        })
+            
+            
+        });
+        
     }
+
+    fetch('http://localhost:3000/menu')
+                .then(data => data.json())
+                .then(res => console.log(res))
 
     
 });
