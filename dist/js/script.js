@@ -204,10 +204,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     forms.forEach(item => {
-        postData(item)
-    })
+        bindPostData(item)
+    });
 
-    function postData(form){
+    const postData = async (url, data) => {
+        let res = await fetch(url , {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: data
+        });
+
+        return await res.json()
+    }
+
+    function bindPostData(form){
         form.addEventListener('submit', e => {
             e.preventDefault();
 
@@ -220,52 +232,21 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             form.insertAdjacentElement('afterend', spinner); 
 
-
-
-            /* const element = document.createElement('div');
-            element.classList.add('status');
-            element.textContent = message.loading;
-            form.append(element); */
-
-            const request = new XMLHttpRequest();
-            request.open("POST", '../server.php')
-            request.setRequestHeader('Content-type', 'application/json')
-
             const formData = new FormData(form);
             const newObj = {}
 
             formData.forEach((item, i) => {
                 newObj[i] = item
             });
-        
-        
-            fetch('server.php',{
-                method: 'POST',
-                headers: {
-                    'Content-type' : 'application/json'
-                },
-                body: JSON.stringify(newObj)
-            }).then((data) => {
+                   
+            postData('http://localhost:3000/requests', JSON.stringify(newObj)).then((data) => {
                     showThanksModal(message.success);
                     spinner.remove();
                 }).catch(() => {
                     showThanksModal(message.failure);
                 }).finally(() => {
                     form.reset()
-                })
-
-           /*  request.addEventListener('load', () => {
-                if(request.status === 200){
-                    console.log(request.response);
-                    //element.textContent = message.success;
-                    form.reset();
-                    spinner.remove();
-                    showThanksModal(message.success);
-                    
-                }else{
-                    showThanksModal(message.failure);
-                }
-            }) */
+                });
 
             function showThanksModal(message){
                 let prevDialogModal = document.querySelector('.modal__dialog');
