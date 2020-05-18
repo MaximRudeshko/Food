@@ -139,8 +139,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', openModalByScroll);
 
     class MenuCard{
-        constructor(src, title, discription, price, parentSelector){
+        constructor(src, altimg, title, discription, price, parentSelector){
             this.src = src,
+            this.altimg = altimg,
             this.title = title,
             this.discription = discription,
             this.price = price,
@@ -165,7 +166,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    new MenuCard(
+    async function getData(url){
+        let res = await fetch(url)
+        if(! res.ok){
+            throw new Error(`${res.status}`)
+        }
+        return await res.json();
+    }
+
+    getData('http://localhost:3000/menu')
+        .then(data => {
+            data.forEach(({img,altimg,title,descr,price}) => {
+                new MenuCard(img,altimg,title,descr,price, '.menu .container').render()
+            })
+        })
+
+
+    /* new MenuCard(
         "img/tabs/vegy.jpg",
         'Меню "Фитнес"',
         'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
@@ -191,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
         '.menu .container'
 
     ).render();
-
+ */
 
     //server
 
@@ -233,17 +250,20 @@ document.addEventListener('DOMContentLoaded', () => {
             form.insertAdjacentElement('afterend', spinner); 
 
             const formData = new FormData(form);
-            const newObj = {}
+            const newDataObj = {}
 
             formData.forEach((item, i) => {
-                newObj[i] = item
+                newDataObj[i] = item
             });
+
+            const json = JSON.stringify(Object.fromEntries(formData.entries()));
                    
-            postData('http://localhost:3000/requests', JSON.stringify(newObj)).then((data) => {
+            postData('http://localhost:3000/requests', json).then((data) => {
                     showThanksModal(message.success);
                     spinner.remove();
                 }).catch(() => {
                     showThanksModal(message.failure);
+                    spinner.remove();
                 }).finally(() => {
                     form.reset()
                 });
@@ -277,11 +297,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
     }
-
-    fetch('http://localhost:3000/menu')
-                .then(data => data.json())
-                .then(res => console.log(res))
-
     
 });
 
