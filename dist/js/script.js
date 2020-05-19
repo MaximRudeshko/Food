@@ -317,6 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
           total = document.querySelector('#total'),
           width = window.getComputedStyle(sliderWrapper).width;
 
+
     let currentSlideIndex = 1,
         offset = 0;
 
@@ -380,11 +381,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     sliderNext.addEventListener('click', () => {
-        if(offset == (+width.slice(0, width.length - 2)) * (slides.length - 1)){
+        if(offset == deleteNoDigits(width) * (slides.length - 1)){
             offset = 0;
             console.log(offset);
         }else{
-            offset += (+width.slice(0, width.length - 2));
+            offset += deleteNoDigits(width);
             console.log(offset);
         }
 
@@ -404,10 +405,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     sliderPrev.addEventListener('click', () => {
         if(offset == 0){
-            offset = (+width.slice(0, width.length - 2)) * (slides.length - 1);
+            offset = deleteNoDigits(width) * (slides.length - 1);
             console.log(offset);
         }else{
-            offset -= (+width.slice(0, width.length - 2));
+            offset -= deleteNoDigits(width);
             console.log(offset);
         }
 
@@ -430,7 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const slideTo = e.target.getAttribute('data-slide-to');
 
             currentSlideIndex = slideTo;
-            offset = (+width.slice(0, width.length - 2)) * (currentSlideIndex - 1);
+            offset = deleteNoDigits(width) * (currentSlideIndex - 1);
             sliderInner.style.transform = `translateX(-${offset}px)`;
 
             dots.forEach(dot => dot.style.opacity = '.5');
@@ -449,6 +450,10 @@ document.addEventListener('DOMContentLoaded', () => {
             current.textContent = currentSlideIndex;
             total.textContent = slides.length;
         }
+    }
+
+    function deleteNoDigits(str){
+        return +str.replace(/\D/g, '');
     }
 
 
