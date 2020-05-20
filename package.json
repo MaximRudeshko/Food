@@ -23,8 +23,8 @@
     "gulp-clean-css": "^4.2.0",
     "gulp-postcss": "^8.0.0",
     "gulp-sass": "^4.0.2",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
     "webpack-stream": "^5.2.1"
   },
   "repository": {
@@ -37,5 +37,6 @@
   "homepage": "https://github.com/MaximRudeshko/Food#readme",
   "dependencies": {
     "json-server": "^0.16.1"
-  }
+  },
+  "keywords": []
 }
