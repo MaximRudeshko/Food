@@ -1,16 +1,14 @@
-function slider() {
-    //slider
+function slider({container,slide,wrapper,inner,next,prev,currentCount,totalCount /* selectors */}) {
 
-    const slides = document.querySelectorAll('.offer__slide'),
-        slider = document.querySelector('.offer__slider'),
-        sliderWrapper = document.querySelector('.offer__slider-wrapper'),
-        sliderInner = document.querySelector('.offer__slider-inner'),
-        sliderNext = document.querySelector('.offer__slider-next'),
-        sliderPrev = document.querySelector('.offer__slider-prev'),
-        current = document.querySelector('#current'),
-        total = document.querySelector('#total'),
+    const slides = document.querySelectorAll(slide),
+        slider = document.querySelector(container),
+        sliderWrapper = document.querySelector(wrapper),
+        sliderInner = document.querySelector(inner),
+        sliderNext = document.querySelector(next),
+        sliderPrev = document.querySelector(prev),
+        current = document.querySelector(currentCount),
+        total = document.querySelector(totalCount),
         width = window.getComputedStyle(sliderWrapper).width;
-
 
     let currentSlideIndex = 1,
         offset = 0;
@@ -23,9 +21,7 @@ function slider() {
 
     sliderWrapper.style.overflow = 'hidden';
 
-
     slides.forEach(slide => slide.style.width = width);
-
 
     // indicators for slider
 
@@ -46,7 +42,6 @@ function slider() {
         list-style: none;
     `;
     slider.append(indicators);
-
 
     for (let i = 0; i < slides.length; i++) {
         const dot = document.createElement('li');
@@ -135,7 +130,6 @@ function slider() {
         })
     })
 
-
     function addZero() {
         if (slides.length < 10) {
             current.textContent = `0${currentSlideIndex}`;
@@ -151,4 +145,4 @@ function slider() {
     };
 }
 
-module.exports = slider;
+export default slider;

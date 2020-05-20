@@ -1,7 +1,9 @@
-function forms () {
-    //forms
+import {closeModal, openModal} from './modal';
+import {postData} from '../services/services';
 
-    const forms = document.querySelectorAll('form');
+function forms (formSelector, modalTimer) {
+
+    const forms = document.querySelectorAll(formSelector);
 
     const message = {
         success: 'Мы вам перезвоним',
@@ -12,18 +14,6 @@ function forms () {
     forms.forEach(item => {
         bindPostData(item)
     });
-
-    const postData = async (url, data) => {
-        let res = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json'
-            },
-            body: data
-        });
-
-        return await res.json()
-    }
 
     function bindPostData(form) {
         form.addEventListener('submit', e => {
@@ -61,7 +51,7 @@ function forms () {
                 let prevDialogModal = document.querySelector('.modal__dialog');
 
                 prevDialogModal.style.display = 'none';
-                openModal();
+                openModal('.modal', modalTimer);
 
                 let thanksModal = document.createElement('div');
                 thanksModal.classList.add('modal__dialog');
@@ -76,9 +66,8 @@ function forms () {
 
                 setTimeout(() => {
                     thanksModal.remove();
-                    modal.style.display = 'none';
                     prevDialogModal.style.display = 'block';
-                    document.body.style.overflow = '';
+                    closeModal('.modal')
                 }, 4000)
             }
 
@@ -88,4 +77,4 @@ function forms () {
     };
 }
 
-module.exports = forms;
+export default forms;

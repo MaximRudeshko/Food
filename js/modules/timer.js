@@ -1,8 +1,5 @@
-function timer() {
-    //Timer
-
-    const deadLine = '2020-05-30';
-
+function timer(deadLine,timerSelector) {
+    
     function getTimeRemaining() {
         const t = Date.parse(deadLine) - Date.parse(new Date),
             day = Math.floor(t / (1000 * 60 * 60 * 24)),
@@ -17,11 +14,10 @@ function timer() {
             'minutes': minutes,
             'seconds': seconds
         }
-
     }
 
     function setClock() {
-        const timer = document.querySelector('.timer'),
+        const timer = document.querySelector(timerSelector),
             days = timer.querySelector('#days'),
             hours = timer.querySelector('#hours'),
             minutes = timer.querySelector('#minutes'),
@@ -32,8 +28,6 @@ function timer() {
 
         function updateClock() {
             const t = getTimeRemaining();
-
-
 
             days.innerHTML = addZeroBeforeNum(t.days);
             hours.innerHTML = addZeroBeforeNum(t.hours);
@@ -57,4 +51,4 @@ function timer() {
     setClock();
 }
 
-module.exports = timer;
+export default timer;

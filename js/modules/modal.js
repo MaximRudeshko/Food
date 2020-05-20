@@ -1,38 +1,42 @@
-function modal() {
-    //Modal
+function openModal(modalSelector, modalTimer) {
+    const modal = document.querySelector(modalSelector);
+    modal.style.display = 'block'
+    document.body.style.overflow = 'hidden';
+    if(modalTimer){
+        clearInterval(modalTimer);
+    } 
+}
 
-    const trigger = document.querySelectorAll('[data-modal]'),
-        modal = document.querySelector('.modal');;
+function closeModal(modalSelector){
+    const modal = document.querySelector(modalSelector);
+    modal.style.display = 'none';
+    document.body.style.overflow = ''
+}
+
+function modal(triggerSelector, modalSelector) {
+
+    const trigger = document.querySelectorAll(triggerSelector),
+          modal = document.querySelector(modalSelector);
 
     trigger.forEach(item => {
-        item.addEventListener('click', openModal)
+        item.addEventListener('click', () => openModal(modalSelector))
     })
 
     modal.addEventListener('click', e => {
         if (e.target == modal || e.target.getAttribute('data-close') == '') {
-            modal.style.display = 'none'
-            document.body.style.overflow = '';
+            closeModal(modalSelector)
         }
     })
 
     document.addEventListener('keydown', (e) => {
         if (e.code === 'Escape' && modal.style.display == 'block') {
-            modal.style.display = 'none';
-            document.body.style.overflow = '';
+            closeModal(modalSelector)
         }
     })
 
-    const modalTimer = setTimeout(openModal, 60000)
-
-    function openModal() {
-        modal.style.display = 'block'
-        document.body.style.overflow = 'hidden';
-        clearInterval(modalTimer)
-    }
-
     function openModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
-            openModal();
+            openModal(modalSelector);
             window.removeEventListener('scroll', openModalByScroll)
         }
     }
@@ -40,4 +44,6 @@ function modal() {
     window.addEventListener('scroll', openModalByScroll);
 }
 
-module.exports = modal;
+export default modal;
+export {openModal};
+export {closeModal};
